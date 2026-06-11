@@ -108,4 +108,28 @@ const verifyEmail = async (req,res)=>{
         });
     }
 }
-module.exports = { register ,login,verifyEmail};
+const logout = async (req,res)=>{
+  try{
+    const refreshToken = req.cookie.refreshToken;
+    if(!refreshToken){
+      res.status(400).json({message:"User already Logged out"});
+    }
+    await userModel.findOneAndUpdate(
+      {refreshToken},{refreshToken:null}
+    )
+    res.clearCookie('refreshToken',{
+      httpOnly:true,secure:process.env.NODE_ENV==="production"
+    })
+    res.status(200).json({message:"user logged out successfully"});
+  }catch(error){
+    res.status(500).json({message:"internal server broken!"});
+  }
+}
+const deleteAccount = async (req,res)=>{
+  try{
+    
+  }catch(error){
+    res.status(500).json({message:'internal server broked ! '})
+  }
+}
+module.exports = { register ,login,verifyEmail,logout,deleteAccount};
