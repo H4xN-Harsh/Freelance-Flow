@@ -110,7 +110,7 @@ const verifyEmail = async (req,res)=>{
 }
 const logout = async (req,res)=>{
   try{
-    const refreshToken = req.cookie.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
     if(!refreshToken){
       res.status(400).json({message:"User already Logged out"});
     }
