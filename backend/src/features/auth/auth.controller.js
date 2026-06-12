@@ -2,6 +2,7 @@ const userModel = require("./auth.model");
 const bcrypt = require("bcryptjs");
 const crypto = require('crypto');
 const { generateAccessToken, generateRefreshToken,sendVerificationEmail } = require("./utils");
+const { default: mongoose } = require("mongoose");
 const register = async (req, res) => {
   try {
     const { username, email, password, occupation } = req.body;
@@ -49,12 +50,19 @@ const register = async (req, res) => {
 };
 const login = async (req, res) => {
   try {
+    // console.log("incoming data : ",req.body);
     const { identifier, password } = req.body;
+    // console.log("identifer ",identifier);
     const user = await userModel
       .findOne({
         $or: [{ email: identifier }, { username: identifier }],
       })
       .select("+password");
+    if(!user.isVerified){
+      return res.status(403).json({
+        message:"Please verify your account then login! "
+      });
+    }
     if (user) {
       const accessToken = generateAccessToken(user._id);
       const refreshToken = generateRefreshToken(user._id);
@@ -127,8 +135,29 @@ const logout = async (req,res)=>{
 }
 const deleteAccount = async (req,res)=>{
   try{
-    
+    const {userID} = req.body||{};
+    const finalUserId = req.user?.id||userID;
+    // console.log(finalUserId);
+    // console.log(req.body);
+    if(!finalUserId){
+      return res.status(400).json({message:"Userid is required to delete account !"});
+    }
+    if(!mongoose.Types.ObjectId.isValid(finalUserId)){
+      return res.status(400).json({message:"invalid user id formate!"})
+    }
+    const delAcc = await userModel.findByIdAndDelete(finalUserId);
+    if(!delAcc){
+      return res.status(404).json({message:"User not found in database!"});
+      
+    }
+    res.clearCookie('refreshToken',{
+      httpOnly:true,secure:process.env.NODE_ENV === "production"
+    });
+    return res.status(200).json({
+      message:"your accound and data have been deleted SuccessFully",
+    })
   }catch(error){
+    console.error(error)
     res.status(500).json({message:'internal server broked ! '})
   }
 }
