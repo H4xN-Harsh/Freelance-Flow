@@ -137,7 +137,7 @@ const deleteAccount = async (req,res)=>{
   try{
     const {userID} = req.body||{};
     const finalUserId = req.user?.id||userID;
-    // console.log(finalUserId);
+    // console.log(finalUserId);g
     // console.log(req.body);
     if(!finalUserId){
       return res.status(400).json({message:"Userid is required to delete account !"});
