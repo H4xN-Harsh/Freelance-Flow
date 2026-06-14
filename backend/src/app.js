@@ -1,6 +1,7 @@
 const express = require('express');
 const authRouter = require('./features/auth/auth.routes');
 const clientRoute = require('./features/client/client.routes');
+const taskRoute = require('./features/tasks/tasks.route');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
@@ -16,4 +17,5 @@ app.use(helmet());
 app.use(cookieParser());
 app.use('/api/auth',authRouter);
 app.use('/api/clients',clientRoute);
+app.use('/api/tasks',taskRoute);
 module.exports = app;
