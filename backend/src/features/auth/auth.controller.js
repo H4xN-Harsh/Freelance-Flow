@@ -2,7 +2,28 @@ const userModel = require("./auth.model");
 const bcrypt = require("bcryptjs");
 const crypto = require('crypto');
 const { generateAccessToken, generateRefreshToken,sendVerificationEmail } = require("./utils");
-const { default: mongoose } = require("mongoose");
+const config = require('../../config/config');
+
+// another controller for refresh token 
+const refreshAccessToken = async (req,res)=>{
+  try{
+    const refreshToken = req.cookies.refreshToken
+    if(!refreshToken)return res.status(401).json({message:"No refresh Token"})
+    const decoded = jwt.verify(refreshToken,config.REFRESH_TOKEN)
+    const user = await userModel.findById(decoded.id);
+    if(!user||user.refreshToken !== refreshToken)return res.status(401).json({message:"Invalid refresh token!"});
+    const newAccessToken = generateAccessToken(user._id);
+    res.status(200).json({
+      accessToken:newAccessToken,
+      user:{id:user._id,username:user.username,email:user.email}
+    })
+  }catch(err){
+    return res.status(401).json({message:"Invalid or Expired refresh token"});
+  }
+}
+
+
+
 const register = async (req, res) => {
   try {
     const { username, email, password, occupation } = req.body;
@@ -161,4 +182,4 @@ const deleteAccount = async (req,res)=>{
     res.status(500).json({message:'internal server broked ! '})
   }
 }
-module.exports = { register ,login,verifyEmail,logout,deleteAccount};
+module.exports = { register ,login,verifyEmail,logout,deleteAccount,refreshAccessToken};

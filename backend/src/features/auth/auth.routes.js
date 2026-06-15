@@ -3,6 +3,7 @@ const userModel = require('./auth.model')
 const authController = require('./auth.controller');
 const router = express.Router();
 const protect = require('./auth.middleware');
+router.post('/refresh', authController.refreshAccessToken)
 router.post('/register',authController.register);
 router.post('/login',authController.login);
 router.get('/verify-email',authController.verifyEmail)
