@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const { generateAccessToken, generateRefreshToken,sendVerificationEmail } = require("./utils");
 const config = require('../../config/config');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 // another controller for refresh token 
 const refreshAccessToken = async (req, res) => {
   try {
@@ -46,6 +47,7 @@ const refreshAccessToken = async (req, res) => {
     });
 
   } catch (err) {
+    console.log(err)
     return res.status(401).json({
       message: "Invalid or expired refresh token"
     });
