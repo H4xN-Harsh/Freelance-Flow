@@ -3,24 +3,54 @@ const bcrypt = require("bcryptjs");
 const crypto = require('crypto');
 const { generateAccessToken, generateRefreshToken,sendVerificationEmail } = require("./utils");
 const config = require('../../config/config');
-
+const mongoose = require('mongoose');
 // another controller for refresh token 
-const refreshAccessToken = async (req,res)=>{
-  try{
-    const refreshToken = req.cookies.refreshToken
-    if(!refreshToken)return res.status(401).json({message:"No refresh Token"})
-    const decoded = jwt.verify(refreshToken,config.REFRESH_TOKEN)
+const refreshAccessToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({
+        message: "No refresh token found"
+      });
+    }
+
+    const decoded = jwt.verify(
+      refreshToken,
+      config.REFRESH_TOKEN
+    );
+
     const user = await userModel.findById(decoded.id);
-    if(!user||user.refreshToken !== refreshToken)return res.status(401).json({message:"Invalid refresh token!"});
-    const newAccessToken = generateAccessToken(user._id);
-    res.status(200).json({
-      accessToken:newAccessToken,
-      user:{id:user._id,username:user.username,email:user.email}
-    })
-  }catch(err){
-    return res.status(401).json({message:"Invalid or Expired refresh token"});
+
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found"
+      });
+    }
+
+    if (user.refreshToken !== refreshToken) {
+      return res.status(401).json({
+        message: "Invalid refresh token"
+      });
+    }
+
+    const accessToken = generateAccessToken(user._id);
+
+    return res.status(200).json({
+      accessToken,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email
+      }
+    });
+
+  } catch (err) {
+    return res.status(401).json({
+      message: "Invalid or expired refresh token"
+    });
   }
-}
+};
 
 
 
@@ -161,7 +191,7 @@ const deleteAccount = async (req,res)=>{
     // console.log(finalUserId);g
     // console.log(req.body);
     if(!finalUserId){
-      return res.status(400).json({message:"Userid is required to delete account !"});
+      return res.status(400).json({message:"User id is required to delete account !"});
     }
     if(!mongoose.Types.ObjectId.isValid(finalUserId)){
       return res.status(400).json({message:"invalid user id formate!"})
