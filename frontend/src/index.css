@@ -1,1 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Cantarell:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import "tailwindcss";
+
+@theme {
+  /* fonts */
+  --font-cantarell:'Cantarell','sans-serif'
+  /* --- Minimal Glassmorphism Palette --- */
+  --color-bg-deep: #09090b;       /* Deep obsidian dark ground */
+  --color-bg-surface: #121214;    /* Opaque fallback for non-transparency layers */
+  
+  --color-brand: #1856ff;         /* Electric Blue for active states & primary actions */
+  --color-brand-glow: #3b82f6;    /* Secondary neon blue for glows */
+
+  /* Text Hierarchy */
+  --color-text-primary: #f4f4f5;   /* Near white for perfect reading legibility */
+  --color-text-muted: #a1a1aa;     /* Soft ash gray for descriptive labels */
+  --color-text-dim: #71717a;       /* Muted gray for footer details/disabled states */
+
+  /* Explicit responsive breakpoints */
+  --breakpoint-mobile: 320px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+}
+
+/* --- Core Reusable Glassmorphism Utility --- */
+@utility glass-panel {
+  background-color: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+@utility glass-interactive {
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}

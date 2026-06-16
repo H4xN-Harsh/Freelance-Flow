@@ -3,7 +3,7 @@ import {useGSAP} from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-const Stairs = () => {
+const Stairs = (props) => {
     const currPath = useLocation().pathname;
     const stairParents = useRef(null);
     const pageRef = useRef(null);
@@ -32,7 +32,7 @@ const Stairs = () => {
     
     <div >
         <div ref={stairParents} className='h-screen w-full fixed z-20 top-0'>
-            <div className='h-full w-full flex'>
+            <div className='h-full w-full flex' >
                 <div className='stair h-full w-1/5 bg-black'></div>
                 <div className='stair h-full w-1/5 bg-black'></div>
                 <div className='stair h-full w-1/5 bg-black'></div>
@@ -40,6 +40,7 @@ const Stairs = () => {
                 <div className='stair h-full w-1/5 bg-black'></div>
             </div>
         </div>
+        <div ref={pageRef}>{props.children}</div>
     </div>
   )
 }
