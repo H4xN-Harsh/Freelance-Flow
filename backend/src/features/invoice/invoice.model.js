@@ -8,6 +8,7 @@ const invoiceSchema = mongoose.Schema({
     dueDate:{type:Date,required:true},
     status:{
         type:String,enum:['pending','paid','overdue'],default:'pending'
-    }
+    },
+    paidAt:{type:Date}
 },{timestamps:true});
 module.exports = mongoose.model('Invoice',invoiceSchema);

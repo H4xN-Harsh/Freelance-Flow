@@ -9,7 +9,7 @@ const AuthPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [identifier, setIdentifier] = useState(''); // Corrected spelling typo
-  const { Login } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate(); // Corrected: Hook instantiated properly
 
   const handleSub = async (e) => {
@@ -20,7 +20,7 @@ const AuthPage = () => {
         // Send identifier (which can be email or username depending on your backend)
         const res = await API.post('/auth/login', { identifier, password });
         const { accessToken, user } = res.data;
-        Login(user, accessToken);
+        login(user, accessToken);
         navigate('/dashboard'); // Fixed: Execute using the hook variable instance
       } catch (err) {
         console.log(err.response?.data?.message || err.message);

@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import API from '../utils/api.js'
 import {useNavigate} from 'react-router-dom'
+
 const AuthContext = createContext();
 export function AuthProvider({children}){
     const [user,setUser] = useState(null);
     const [accessToken,setAccessToken] = useState(null);
+    const [loading,setLoading] = useState(true);
     const navigate = useNavigate();
     useEffect(()=>{
         async function refreshAccessToken() {
@@ -17,6 +19,8 @@ export function AuthProvider({children}){
             }catch(err){
                 setUser(null);
                 setAccessToken(null);
+            }finally{
+                setLoading(false)
             }
         }
         refreshAccessToken();
@@ -24,11 +28,9 @@ export function AuthProvider({children}){
     
     async function login(user,accessToken){
         try{
-            const res = await API.post(
-                "/auth/login",{identifyer,password},{withCredentials:true}
-            );
-            setUser(res.data.user);
-            setAccessToken(res.data.accessToken);
+            
+            setUser(user);
+            setAccessToken(accessToken);
             navigate('/dashboard');
         }catch(err){
             console.log(err)
@@ -49,7 +51,7 @@ export function AuthProvider({children}){
         }
     }
     return (
-        <AuthContext.Provider value={{user,accessToken,login, Logout}}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{user,accessToken,login, Logout,loading}}>{children}</AuthContext.Provider>
     )
 }
 

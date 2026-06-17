@@ -16,12 +16,12 @@ const getdashBoardData = async(req,res) =>{
         // const startOfCurrentYear = new Date(now.getFullYear(),0,1);
         const [totalProjects,invoiceStats] = await Promise.all([
             Task.countDocuments({
-                freelancerId:freelancerId,status:'done'
+                createdBy:freelancerId,status:'done'
             }),
             Invoice.aggregate([
                 {
                     $match:{
-                        freelancerId:freelancerId,status:"paid"
+                        createdBy:freelancerId,status:"paid"
                     }
                 },{
                     $facet:{
