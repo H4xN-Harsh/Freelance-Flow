@@ -16,7 +16,7 @@ const EariningChart = ({data}) => {
         return null;
     }
   return (
-    <section className='glass-panel rounded-2xl p-6 space-x-4'>
+    <section className='glass-panel rounded-2xl p-6 space-y-4'>
         <h3 className='text-sm font-mono uppercase tracking-wider text-text-primary'>Earning Overview</h3>
         <div className='w-full h-64'>
             <ResponsiveContainer width='100%' height='100%'>
@@ -31,13 +31,13 @@ const EariningChart = ({data}) => {
                     stroke='rgba(255,255,255,0.05)'
                     vertical={false}
                     />
-                    <XAxis
-                    dataKey='month'
-                    stroke='rgba(255,255,255,0.4'
-                    tick={{fill:'rgba(255,255,255,0.04)', fontSize:12}}
-                    axisLine = {false}
-                    tickLine = {false} 
-                    />
+                    <XAxis 
+    dataKey='month'
+    stroke='rgba(255,255,255,0.4)'
+    tick={{fill:'rgba(255,255,255,0.7)', fontSize:12}}  // ← opacity 0.04 se 0.7 kiya
+    axisLine={false}
+    tickLine={false} 
+/>
                     <YAxis
                     dataKey='month'
                     stroke='rgba(255,255,255,0.4'
@@ -45,7 +45,8 @@ const EariningChart = ({data}) => {
                     axisLine = {false}
                     tickLine = {false} 
                     />
-                    <Tooltip content={<CustomTooltip/>}/>
+                    <Tooltip content={<CustomTooltip/>}
+                    cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }}/>
                     <Area type='monotone' dataKey='earnings' stroke='#3b82f6' strokeWidth={2} fill='url(#earningsGradient)'/>
                 </AreaChart>
             </ResponsiveContainer>

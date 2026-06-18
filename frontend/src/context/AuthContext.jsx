@@ -25,7 +25,13 @@ export function AuthProvider({children}){
         }
         refreshAccessToken();
     },[])
-    
+    useEffect(()=>{
+        const intercepter = API.interceptors.request.use((config)=>{
+            if(accessToken)config.headers.Authorization = `Bearer ${accessToken}`;
+            return config
+        })
+        return ()=>API.interceptors.request.eject(intercepter)
+    },[accessToken])
     async function login(user,accessToken){
         try{
             

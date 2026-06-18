@@ -3,7 +3,7 @@ const router = express.Router();
 const {createClient, getAllClients, deleteClient, updateClient,getClient} = require('./client.controller');
 const protect = require('../../features/auth/auth.middleware');
 router.post('/create',protect,createClient);
-router.get('/allClients',protect,getAllClients);
+router.get('/all',protect,getAllClients);
 router.get('/:id',protect,getClient);
 router.patch('/:id',protect,updateClient);
 router.delete('/:id',protect,deleteClient);

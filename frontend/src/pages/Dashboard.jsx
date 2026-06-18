@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import {useAuth} from '../context/AuthContext';
 import API from '../utils/api'
 import { Label } from 'recharts';
 import EariningChart from '../components/EariningChart';
 const Dashboard = () => {
-    const {user} = useAuth();
+    const {user,accessToken,loading:authLoading} = useAuth();
     const [stats,setStats] = useState(null);
     const [loading,setLoading] = useState(true);
     useEffect(()=>{
@@ -19,7 +19,9 @@ const Dashboard = () => {
             }
         }
         fetchDashboardData();
-    },[]);
+    },[authLoading]);
+    console.log(user)
+    console.log(stats)
     if(loading){
         return(<div className='min-h-screen bg-bg-surface flex items-center justify-center'>
             <p className='text-text-muted'>Loading Dashboard...</p>
@@ -28,7 +30,7 @@ const Dashboard = () => {
     const statCards=[
         {label:'Completed Projects',value:stats?.totalProjects||0},
         {label:'Total Earning', value:`$${stats?.totalEarnings?.toLocaleString()||0}`},
-        {label:'Last Month Earnings',Value:`$${stats?.lastMonthEarnings?.toLocaleString()||0}`}
+        {label:'Last Month Earnings',value:`$${stats?.lastMonthEarnings?.toLocaleString()||0}`}
     ]
   return (
     <div className='relative min-h-screen bg-bg-surface text-text-primary pt-28 pb-12 px-4'>
