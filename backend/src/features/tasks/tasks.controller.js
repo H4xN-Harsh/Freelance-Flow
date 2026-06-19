@@ -20,7 +20,7 @@ const updateTask = async(req,res)=>{
 }
 const getAllTask = async(req,res)=>{
     try{
-        const tasks = await taskModel.find({createdBy:req.user._id});
+        const tasks = await taskModel.find({createdBy:req.user._id}).populate('clientId', 'clientName clientEmail');;
         return res.status(200).json({message:"here is all task! ",tasks});
     }catch(err){
         return res.status(500).json({message:"Internal Server Broken! "});

@@ -21,7 +21,7 @@ const NavBar = () => {
       <div className='glass-panel max-w-6xl mx-auto px-6 py-4 rounded-2xl flex items-center justify-between transition-all duration-300'>
         
         {/* Logo */}
-        <div onClick={() => navigate(user ? '/dashboard' : '/auth')} className="cursor-pointer select-none">
+        <div onClick={() => navigate(user ? '/dashboard' : '/')} className="cursor-pointer select-none">
           <h1 className='font-extrabold text-xl tracking-tight'>
             Freelance<span className='text-brand font-extrabold text-xl'>Flow</span>
           </h1>

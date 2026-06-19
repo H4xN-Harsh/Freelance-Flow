@@ -6,6 +6,7 @@ import AuthPage from './pages/AuthPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import Client from './pages/Client';
+import Task from './pages/Task';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path='/' element={<AuthPage/> }/>
         <Route path='/dashboard' element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
         <Route path='/clients' element={<ProtectedRoute><Client/></ProtectedRoute>}/>
+        <Route path='/tasks' element={<ProtectedRoute><Task/></ProtectedRoute>}/>
         
       </Routes>
     </>

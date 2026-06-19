@@ -20,8 +20,7 @@ const Dashboard = () => {
         }
         fetchDashboardData();
     },[authLoading]);
-    console.log(user)
-    console.log(stats)
+    
     if(loading){
         return(<div className='min-h-screen bg-bg-surface flex items-center justify-center'>
             <p className='text-text-muted'>Loading Dashboard...</p>

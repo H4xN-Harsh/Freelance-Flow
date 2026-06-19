@@ -46,18 +46,18 @@ export function AuthProvider({children}){
             }
         }
     }
-    async function Logout(){
+    async function logout(){
         try{
             const res = await API.post('/auth/logout',{},{withCredentials:true});
             setUser(null);
             setAccessToken(null);
-            navigate('/login');
+            navigate('/');
         }catch (err) {
             console.error(err);
         }
     }
     return (
-        <AuthContext.Provider value={{user,accessToken,login, Logout,loading}}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{user,accessToken,login, logout,loading}}>{children}</AuthContext.Provider>
     )
 }
 
