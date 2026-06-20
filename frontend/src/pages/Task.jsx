@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import API from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import TaskCard from "../components/TaskCard";
-import {
-  DndContext,
-  useDroppable,
-  useSensor,
-  useSensors,
-  PointerSensor,
-} from "@dnd-kit/core";
+
 const Task = () => {
   const [tasks, setTasks] = useState([]);
   const { loading: authLoading } = useAuth();
@@ -16,9 +10,7 @@ const Task = () => {
   const todoTasks = tasks.filter((task) => task.status === "todo");
   const inProgress = tasks.filter((task) => task.status === "in-progress");
   const doneTasks = tasks.filter((task) => task.status === "done");
-  const { setNodeRef: setTodoRef } = useDroppable({ id: "todo" });
-  const { setNodeRef: setInProgress } = useDroppable({ id: "in-progress" });
-  const { setNodeRef: setDoneRef } = useDroppable({ id: "done" });
+
   useEffect(() => {
     if (authLoading) return;
     async function getAllTask() {
@@ -34,30 +26,17 @@ const Task = () => {
     getAllTask();
   }, [authLoading]);
 
-  
-  async function handleDragEnd(event) {
-    console.log("Drag Ended", event.active.id,event.over?.id)
-    const taskId = event.active.id;
-    const newStatus = event.over?.id;
-
-    if(!newStatus)return;
-    setTasks(prevT=>
-        prevT.map(task=> task._id === taskId?{...task,status:newStatus}:task)
+  async function updateTaskStatus(taskId, newStatus) {
+    setTasks(prevT =>
+      prevT.map(task => task._id === taskId ? {...task, status: newStatus} : task)
     );
-    try{
-        await API.patch(`/tasks/${taskId}`,{status:newStatus})
-    }catch(err){
-        console.log(err)
+    try {
+      await API.patch(`/tasks/${taskId}`, { status: newStatus });
+    } catch(err) {
+      console.log(err);
     }
-    
   }
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    }),
-  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center">
@@ -65,6 +44,7 @@ const Task = () => {
       </div>
     );
   }
+
   return (
     <div className="relative min-h-screen bg-bg-surface text-text-primary pt-28 pb-12 px-4">
       <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-brand/20 rounded-full blur-[130px] pointer-events-none" />
@@ -81,48 +61,34 @@ const Task = () => {
             + Create Tasks
           </button>
         </div>
-        <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Todo Column */}
-            <div
-              ref={setTodoRef}
-              className="glass-panel rounded-2xl p-4 min-h-[300px]"
-            >
-              <h3 className="text-sm font-mono uppercase tracking-wider text-text-muted mb-3">
-                Todo ({todoTasks.length})
-              </h3>
-              {todoTasks.map((task) => (
-                <TaskCard key={task._id} task={task} />
-              ))}
-            </div>
-
-            {/* In Progress Column */}
-            <div
-              ref={setInProgress}
-              className="glass-panel rounded-2xl min-h-[300px] p-4"
-            >
-              <h3 className="text-sm font-mono uppercase tracking-wider text-text-muted mb-3">
-                In Progress ({inProgress.length})
-              </h3>
-              {inProgress.map((task) => (
-                <TaskCard key={task._id} task={task} />
-              ))}
-            </div>
-
-            {/* Done Column */}
-            <div
-              ref={setDoneRef}
-              className="glass-panel min-h-[300px] rounded-2xl p-4"
-            >
-              <h3 className="text-sm font-mono uppercase tracking-wider text-text-muted mb-3">
-                Done ({doneTasks.length})
-              </h3>
-              {doneTasks.map((task) => (
-                <TaskCard key={task._id} task={task} />
-              ))}
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="glass-panel rounded-2xl p-4 min-h-[300px]">
+            <h3 className="text-sm font-mono uppercase tracking-wider text-text-muted mb-3">
+              Todo ({todoTasks.length})
+            </h3>
+            {todoTasks.map((task) => (
+              <TaskCard key={task._id} task={task} onStatusChange={updateTaskStatus} />
+            ))}
           </div>
-        </DndContext>
+
+          <div className="glass-panel rounded-2xl min-h-[300px] p-4">
+            <h3 className="text-sm font-mono uppercase tracking-wider text-text-muted mb-3">
+              In Progress ({inProgress.length})
+            </h3>
+            {inProgress.map((task) => (
+              <TaskCard key={task._id} task={task} onStatusChange={updateTaskStatus} />
+            ))}
+          </div>
+
+          <div className="glass-panel min-h-[300px] rounded-2xl p-4">
+            <h3 className="text-sm font-mono uppercase tracking-wider text-text-muted mb-3">
+              Done ({doneTasks.length})
+            </h3>
+            {doneTasks.map((task) => (
+              <TaskCard key={task._id} task={task} onStatusChange={updateTaskStatus} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
