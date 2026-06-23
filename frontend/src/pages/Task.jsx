@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import API from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import TaskCard from "../components/TaskCard";
+import CreateTask from "../components/CreateTask";
 
 const Task = () => {
   const [tasks, setTasks] = useState([]);
@@ -10,7 +11,10 @@ const Task = () => {
   const todoTasks = tasks.filter((task) => task.status === "todo");
   const inProgress = tasks.filter((task) => task.status === "in-progress");
   const doneTasks = tasks.filter((task) => task.status === "done");
-
+  const [showModal, setShowModal] = useState(false);
+  function handleNewTask(newTask) {
+    setTasks((prev) => [...prev, newTask]);
+  }
   useEffect(() => {
     if (authLoading) return;
     async function getAllTask() {
@@ -27,16 +31,37 @@ const Task = () => {
   }, [authLoading]);
 
   async function updateTaskStatus(taskId, newStatus) {
-    setTasks(prevT =>
-      prevT.map(task => task._id === taskId ? {...task, status: newStatus} : task)
+    setTasks((prevT) =>
+      prevT.map((task) =>
+        task._id === taskId ? { ...task, status: newStatus } : task,
+      ),
     );
     try {
       await API.patch(`/tasks/${taskId}`, { status: newStatus });
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
   }
-
+  async function deleteTask(taskId) {
+    try {
+      await API.delete(`/tasks/${taskId}`);
+      setTasks((prev) => prev.filter((task) => task._id !== taskId));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function updateTask(taskId, updatedData) {
+    try {
+      const res = await API.patch(`/tasks/${taskId}`, updatedData);
+      setTasks((prev) =>
+        prev.map((task) =>
+          task._id === taskId ? { ...task, ...updatedData } : task,
+        ),
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
   if (loading) {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center">
@@ -58,16 +83,28 @@ const Task = () => {
             onClick={() => setShowModal(true)}
             className="bg-brand hover:bg-brand/90 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
           >
-            + Create Tasks
+            + Create Task
           </button>
         </div>
+        {showModal && (
+          <CreateTask
+            onClose={() => setShowModal(false)}
+            onSuccess={handleNewTask}
+          />
+        )}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="glass-panel rounded-2xl p-4 min-h-[300px]">
             <h3 className="text-sm font-mono uppercase tracking-wider text-text-muted mb-3">
               Todo ({todoTasks.length})
             </h3>
             {todoTasks.map((task) => (
-              <TaskCard key={task._id} task={task} onStatusChange={updateTaskStatus} />
+              <TaskCard
+                key={task._id}
+                task={task}
+                onStatusChange={updateTaskStatus}
+                onDelete={deleteTask}
+                onUpdate={updateTask}
+              />
             ))}
           </div>
 
@@ -76,7 +113,13 @@ const Task = () => {
               In Progress ({inProgress.length})
             </h3>
             {inProgress.map((task) => (
-              <TaskCard key={task._id} task={task} onStatusChange={updateTaskStatus} />
+              <TaskCard
+                key={task._id}
+                task={task}
+                onStatusChange={updateTaskStatus}
+                onDelete={deleteTask}
+                onUpdate={updateTask}
+              />
             ))}
           </div>
 
@@ -85,7 +128,13 @@ const Task = () => {
               Done ({doneTasks.length})
             </h3>
             {doneTasks.map((task) => (
-              <TaskCard key={task._id} task={task} onStatusChange={updateTaskStatus} />
+              <TaskCard
+                key={task._id}
+                task={task}
+                onStatusChange={updateTaskStatus}
+                onDelete={deleteTask}
+                onUpdate={updateTask}
+              />
             ))}
           </div>
         </div>
