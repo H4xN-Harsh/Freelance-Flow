@@ -1,9 +1,4 @@
-// Functions chahiye:
-// → createClient
-// → getAllClients
-// → getClient
-// → updateClient
-// → deleteClient
+
 const client = require('./client.model');
 const clientModel = require('./client.model');
 const createClient = async (req,res)=>{
@@ -61,4 +56,39 @@ const deleteClient = async(req,res)=>{
         return res.status(500).json({message:"Internal server Broked! "});
     }    
 }
-module.exports = {createClient,getAllClients,updateClient,deleteClient,getClient}
+
+
+//project update
+const updateProject = async(req,res)=>{
+    try{
+        const {clientId,projectId} = req.params;
+        const {projectName,projectBrief,amount,status} = req.body;
+        const client = await clientModel.findById(clientId);
+        if(!client) return res.status(404).json({message:'client not found! '});
+        const project = client.project.id(projectId);
+        if(!project)return res.status(404).json({message:'project not found! '});
+        if(projectName) project.projectName = projectName;
+        if(projectBrief) project.projectBrief = projectBrief;
+        if(amount) project.amount = amount;
+        if(status) project.status = status;
+        await client.save();
+        res.status(200).json({message:"project updated!",client})
+    }catch(err){
+        res.status(500).json({message:'Internal Server Error! '});
+    }
+}
+
+const deleteProject = async (req,res)=>{
+    try{
+        const {clientId,projectId} = req.params;
+        const client = await clientModel.findById(clientId);
+        if(!client) return res.status(404).json({message:"Client not found! "});
+        client.project.pull(projectId);
+        await client.save();
+        res.status(200).json({message:"Project deleted! ",client});
+
+    }catch(err){
+        res.status(500).json({message:"Internal server Error! "})
+    }
+}
+module.exports = {createClient,getAllClients,updateClient,deleteClient,getClient,deleteProject,updateProject}
