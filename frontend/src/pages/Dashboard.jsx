@@ -64,7 +64,9 @@ const Dashboard = () => {
             </div>
           ))}
         </section>
-        <EariningChart data={stats?.graphData || []} />
+        {stats?.graphData?.length > 0 && (
+    <EariningChart data={stats.graphData} />
+)}
       </div>
     </div>
   );

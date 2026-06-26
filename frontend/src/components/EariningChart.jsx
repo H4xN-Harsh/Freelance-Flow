@@ -29,9 +29,12 @@ const EariningChart = ({ data }) => {
       <h3 className="text-sm font-mono uppercase tracking-wider text-text-primary">
         Earning Overview
       </h3>
-      <div className="w-full h-64">
+      <div style={{ width: "100%", height: "256px" }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <AreaChart
+            data={data}
+            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+          >
             <defs>
               <linearGradient id="earningsGradient" x1="0" y1="0" x2="0" y2="1">
                 {/* ↑ y2="1" fix kiya — top se bottom gradient */}
