@@ -8,20 +8,22 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
 const EariningChart = ({ data }) => {
-  const CustomTooltip = (active, payload, label) => {
+  const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div className="glass-panel px-4 py-2 rounded-xl border border-white/10">
           <p className="text-text-muted text-xs font-mono uppercase">{label}</p>
           <p className="text-text-primary text-sm font-semibold mt-1">
-            {payload[0].value.toLocaleString()}
+            ₹{payload[0].value.toLocaleString()}
           </p>
         </div>
       );
     }
     return null;
   };
+
   return (
     <section className="glass-panel rounded-2xl p-6 space-y-4">
       <h3 className="text-sm font-mono uppercase tracking-wider text-text-primary">
@@ -29,12 +31,10 @@ const EariningChart = ({ data }) => {
       </h3>
       <div className="w-full h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-          >
+          <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
-              <linearGradient id="earningsGradient" x1="0" y1="0" x2="0" y2="0">
+              <linearGradient id="earningsGradient" x1="0" y1="0" x2="0" y2="1">
+                {/* ↑ y2="1" fix kiya — top se bottom gradient */}
                 <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.4} />
                 <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
               </linearGradient>
@@ -47,16 +47,16 @@ const EariningChart = ({ data }) => {
             <XAxis
               dataKey="month"
               stroke="rgba(255,255,255,0.4)"
-              tick={{ fill: "rgba(255,255,255,0.7)", fontSize: 12 }} // ← opacity 0.04 se 0.7 kiya
+              tick={{ fill: "rgba(255,255,255,0.7)", fontSize: 12 }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              dataKey="month"
-              stroke="rgba(255,255,255,0.4"
-              tick={{ fill: "rgba(255,255,255,0.04)", fontSize: 12 }}
+              stroke="rgba(255,255,255,0.4)"
+              tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }}
               axisLine={false}
               tickLine={false}
+              tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
             />
             <Tooltip
               content={<CustomTooltip />}

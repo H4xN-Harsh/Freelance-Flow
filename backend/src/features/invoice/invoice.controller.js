@@ -29,7 +29,7 @@ const updateInvoice = async(req,res)=>{
         const {id} = req.params;
         const updateData = {...req.body};
         if(req.body.status==='paid')updateData.paidAt = new Date();
-        const updatedInvoice = await invoiceModel.findByIdAndUpdate(id,req.body,{new:true});
+        const updatedInvoice = await invoiceModel.findByIdAndUpdate(id, updateData, {new:true});
         return res.status(200).json({message:"updated successfully! ",updatedInvoice});
     }catch(err){
         return res.status(500).json({message:"Internal server Broken! "})
