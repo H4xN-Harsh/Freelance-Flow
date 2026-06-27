@@ -1,7 +1,7 @@
 import React from "react";
 import Stairs from "./components/animations/Stairs";
 import NavBar from "./components/NavBar";
-import { Route, Routes,Navigate } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
@@ -9,6 +9,7 @@ import Client from "./pages/Client";
 import Task from "./pages/Task";
 import ClientDetail from "./pages/ClientDetail";
 import { useAuth } from "./context/AuthContext";
+import Invoices from './pages/Invoices'
 const App = () => {
   const { loading, user } = useAuth(); // ← add karo
 
@@ -34,6 +35,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/invoices"
+          element={
+            <ProtectedRoute>
+              <Invoices />
             </ProtectedRoute>
           }
         />
